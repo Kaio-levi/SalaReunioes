@@ -1,26 +1,26 @@
 package entities;
 
 public class Projeto {
-	private int idProjeto;
+	private int id;
 	private String nome;
 	private String descricao;
-	private Funcionarios funcionarios;
+	private int funcionarioId;
 	
 	public Projeto() {}
 
-	public Projeto(int idProjeto, String nome, String descricao, Funcionarios funcionarios) {
-		this.idProjeto = idProjeto;
+	public Projeto(int idProjeto, String nome, String descricao, int funcionarioId) {
+		this.id = idProjeto;
 		this.nome = nome;
 		this.descricao = descricao;
-		this.funcionarios = funcionarios;
+		this.funcionarioId = funcionarioId;
 	}
 
 	public int getIdProjeto() {
-		return idProjeto;
+		return id;
 	}
 
 	public void setIdProjeto(int idProjeto) {
-		this.idProjeto = idProjeto;
+		this.id = idProjeto;
 	}
 
 	public String getNome() {
@@ -39,11 +39,12 @@ public class Projeto {
 		this.descricao = descricao;
 	}
 
-	public Funcionarios getFuncionarios() {
-		return funcionarios;
-	}
-
-	public void setFuncionarios(Funcionarios funcionarios) {
-		this.funcionarios = funcionarios;
-	}
-}
+	public int getFuncionarioId(){ 
+		return funcionarioId; 
+		}
+	
+    public void setFuncionarioId(int funcionarioId) { 
+    	this.funcionarioId = funcionarioId;
+    }
+    
+}    
