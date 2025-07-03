@@ -1,20 +1,22 @@
 package entities;
 
 public class Projeto {
+	//atributos
 	private int id;
 	private String nome;
 	private String descricao;
 	private int funcionarioId;
 	
+	//construtor padrao
 	public Projeto() {}
-
+	//construtor com as variaveis referenciadas
 	public Projeto(int idProjeto, String nome, String descricao, int funcionarioId) {
 		this.id = idProjeto;
 		this.nome = nome;
 		this.descricao = descricao;
 		this.funcionarioId = funcionarioId;
 	}
-
+	//getters and setters
 	public int getIdProjeto() {
 		return id;
 	}

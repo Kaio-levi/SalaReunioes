@@ -1,15 +1,17 @@
 package entities;
 
 public class Funcionarios extends Pessoa {
-    private int id;
+    //atributos
+	private int id;
     private String matricula;
     private String departamento;
     private int pessoaId; // Chave estrangeira
-
+    
+    //construtor padrao
     public Funcionarios() {
     	
     }
-    
+    //construtor com as variaveis referenciasdass
     public Funcionarios(int id, String matricula, String departamento, int pessoaId) {
         this.id = id;
         this.matricula = matricula;
@@ -18,7 +20,7 @@ public class Funcionarios extends Pessoa {
     }
 
     // Getters e Setters
-    public int getId(){ 
+    public int getIdF(){ 
     	return id; 
     }
     

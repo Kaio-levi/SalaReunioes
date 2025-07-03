@@ -1,10 +1,16 @@
 package entities;
 public class Pessoa {
-    private int id;
+    //atributos
+	private int id;
     private String nome;
     private String email;
 
-    public Pessoa() {}
+    //construtor padrão
+    public Pessoa() {
+    	
+    }
+    
+    //construtor referenciado
     public Pessoa(int id, String nome, String email) {
         this.id = id;
         this.nome = nome;

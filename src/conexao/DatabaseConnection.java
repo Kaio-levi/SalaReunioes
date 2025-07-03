@@ -9,7 +9,7 @@ import entities.Pessoa;
 import entities.Projeto;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost/empresa?serverTimezone=UTC";
+	private static final String URL = "jdbc:mysql://localhost/mydb?serverTimezone=UTC";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 
@@ -18,9 +18,9 @@ public class DatabaseConnection {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // CRUD para Pessoa
+    // criar pessoa
     public void createPessoa(Pessoa pessoa) throws SQLException {
-        String sql = "INSERT INTO Pessoa (nome, email) VALUES (?, ?)";
+        String sql = "INSERT INTO Pessoa (Nome, Email) VALUES (?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, pessoa.getNome());
@@ -35,6 +35,7 @@ public class DatabaseConnection {
         }
     }
 
+    //listar pessoa
     public List<Pessoa> readPessoas() throws SQLException {
         List<Pessoa> pessoas = new ArrayList<>();
         String sql = "SELECT * FROM Pessoa";
@@ -42,15 +43,16 @@ public class DatabaseConnection {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Pessoa p = new Pessoa(rs.getInt("id"), rs.getString("nome"), rs.getString("email"));
+                Pessoa p = new Pessoa(rs.getInt("idPessoa"), rs.getString("Nome"), rs.getString("Email"));
                 pessoas.add(p);
             }
         }
         return pessoas;
     }
-
+    
+    //atualizar pessoa 
     public void updatePessoa(Pessoa pessoa) throws SQLException {
-        String sql = "UPDATE Pessoa SET nome = ?, email = ? WHERE id = ?";
+        String sql = "UPDATE Pessoa SET Nome = ?, Email = ? WHERE idPessoa = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, pessoa.getNome());
@@ -64,9 +66,10 @@ public class DatabaseConnection {
             }
         }
     }
-
+    
+    //deletar pessoa
     public void deletePessoa(int id) throws SQLException {
-        String sql = "DELETE FROM Pessoa WHERE id = ?";
+        String sql = "DELETE FROM Pessoa WHERE idPessoa = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -79,10 +82,10 @@ public class DatabaseConnection {
         }
     }
 
-    // CRUD para Funcionario (com regras de negócio)
+    // criar funcionario
     public void createFuncionario(Funcionarios funcionarios) throws SQLException {
         if (pessoaExists(funcionarios.getPessoaId())) {
-            String sql = "INSERT INTO Funcionario (matricula, departamento, Pessoa_id) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO Funcionario (Matricula, Departamento, Pessoa_idPessoa) VALUES (?, ?, ?)";
             try (Connection conn = getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, funcionarios.getMatricula());
@@ -100,7 +103,8 @@ public class DatabaseConnection {
             System.out.println("Erro: ID da Pessoa não existe para cadastrar Funcionário.");
         }
     }
-
+    
+    //listar funcionario
     public List<Funcionarios> readFuncionarios() throws SQLException {
         List<Funcionarios> funcionarios = new ArrayList<>();
         String sql = "SELECT * FROM Funcionario";
@@ -108,15 +112,15 @@ public class DatabaseConnection {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Funcionarios f = new Funcionarios(rs.getInt("id"), rs.getString("matricula"), rs.getString("departamento"), rs.getInt("Pessoa_id"));
+                Funcionarios f = new Funcionarios(rs.getInt("idFuncionarios"), rs.getString("Matricula"), rs.getString("Departamento"), rs.getInt("Pessoa_idPessoa"));
                 funcionarios.add(f);
             }
         }
         return funcionarios;
     }
-
+    //atualizar Funcionario
     public void updateFuncionario(Funcionarios funcionario) throws SQLException {
-        String sql = "UPDATE Funcionario SET matricula = ?, departamento = ?, Pessoa_id = ? WHERE id = ?";
+        String sql = "UPDATE Funcionario SET Matricula = ?, Departamento = ?, Pessoa_idPessoa = ? WHERE idPessoa = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, funcionario.getMatricula());
@@ -131,10 +135,10 @@ public class DatabaseConnection {
             }
         }
     }
-
+    //deletar funcionario
     public void deleteFuncionario(int id) throws SQLException {
         if (!funcionarioHasProjects(id)) {
-            String sql = "DELETE FROM Funcionario WHERE id = ?";
+            String sql = "DELETE FROM Funcionario WHERE idFuncionario = ?";
             try (Connection conn = getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
@@ -150,10 +154,10 @@ public class DatabaseConnection {
         }
     }
 
-    // CRUD para Projeto (com regras de negócio)
+    // criar projeto intragado ao funcionario
     public void createProjeto(Projeto projeto) throws SQLException {
         if (funcionarioExists(projeto.getFuncionarioId())) {
-            String sql = "INSERT INTO Projeto (nome, descricao, Funcionario_id) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO Projeto (Nome, Descricao, Funcionario_idFuncionario) VALUES (?, ?, ?)";
             try (Connection conn = getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, projeto.getNome());
@@ -171,7 +175,7 @@ public class DatabaseConnection {
             System.out.println("Erro: Funcionário não existe para vincular ao Projeto.");
         }
     }
-
+    //listar projeto
     public List<Projeto> readProjetos() throws SQLException {
         List<Projeto> projetos = new ArrayList<>();
         String sql = "SELECT * FROM Projeto";
@@ -179,15 +183,15 @@ public class DatabaseConnection {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Projeto p = new Projeto(rs.getInt("id"), rs.getString("nome"), rs.getString("descricao"), rs.getInt("Funcionario_id"));
+                Projeto p = new Projeto(rs.getInt("idProjeto"), rs.getString("Nome"), rs.getString("Descricao"), rs.getInt("Funcionario_idFuncionario"));
                 projetos.add(p);
             }
         }
         return projetos;
     }
-
+    //atualiza projeto
     public void updateProjeto(Projeto projeto) throws SQLException {
-        String sql = "UPDATE Projeto SET nome = ?, descricao = ?, Funcionario_id = ? WHERE id = ?";
+        String sql = "UPDATE Projeto SET Nome = ?, Descricao = ?, Funcionario_idFuncionario = ? WHERE idProjeto = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, projeto.getNome());
@@ -202,9 +206,9 @@ public class DatabaseConnection {
             }
         }
     }
-
+    //deleta projeto
     public void deleteProjeto(int id) throws SQLException {
-        String sql = "DELETE FROM Projeto WHERE id = ?";
+        String sql = "DELETE FROM Projeto WHERE idProjeto = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -217,9 +221,11 @@ public class DatabaseConnection {
         }
     }
 
-    // Métodos auxiliares para regras de negócio
+    // regras de negócio
+    
+    //verifica se a pessoa existe
     public boolean pessoaExists(int id) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Pessoa WHERE id = ?";
+        String sql = "SELECT COUNT(*) FROM Pessoa WHERE idPessoa = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -231,9 +237,10 @@ public class DatabaseConnection {
         }
         return false;
     }
-
+    
+    //verifica se funcionario existe
     public boolean funcionarioExists(int id) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Funcionario WHERE id = ?";
+        String sql = "SELECT COUNT(*) FROM Funcionario WHERE idFuncionario = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -245,9 +252,9 @@ public class DatabaseConnection {
         }
         return false;
     }
-
+    //verifica se o funcionario esta vinculado a um projeto
     public boolean funcionarioHasProjects(int id) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Projeto WHERE Funcionario_id = ?";
+        String sql = "SELECT COUNT(*) FROM Projeto WHERE Funcionario_idFuncionairo = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
